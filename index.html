@@ -166,6 +166,10 @@
 <div id="answer"></div>
 
 <script>
+let totalBank6 = 0;
+let totalBank12 = 0;
+let totalMarket12 = 0;
+
 function setDefaults() {
   document.getElementById("num1").value = "";
   document.getElementById("num2").value = "";
@@ -210,11 +214,19 @@ function calculate() {
     !isNaN(loanValue1Year) &&
     !isNaN(marketValue1Year)
   ) {
+    totalBank6 += loanValue6Month;
+    totalBank12 += loanValue1Year;
+    totalMarket12 += marketValue1Year;
+
     document.getElementById("answer").innerHTML =
       "💰 <strong>Net gold weight:</strong> " + netGoldWeight.toFixed(2) + " grams<br><br>" +
       "🏦 <strong>Bank value for 6 months:</strong> ₹" + loanValue6Month.toFixed(2) + "<br>" +
-      "🏦 <strong>Bank value for 1 year:</strong> ₹" + loanValue1Year.toFixed(2) + "<br><br>" +
-      "📈 <strong>Market value for 1 year:</strong> ₹" + marketValue1Year.toFixed(2);
+      "🏦 <strong>Bank value for 1 year:</strong> ₹" + loanValue1Year.toFixed(2) + "<br>" +
+      "📈 <strong>Market value for 1 year:</strong> ₹" + marketValue1Year.toFixed(2) + "<br><br>" +
+      "🧮 <strong>Grand Total (All Purities):</strong><br>" +
+      "🏦 6 Months: ₹" + totalBank6.toFixed(2) + "<br>" +
+      "🏦 1 Year: ₹" + totalBank12.toFixed(2) + "<br>" +
+      "📈 Market: ₹" + totalMarket12.toFixed(2);
   } else {
     document.getElementById("answer").innerHTML = "⚠️ Please enter valid numbers.";
   }
