@@ -5,19 +5,20 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #fff8dc, #f5f5dc);
+      background: linear-gradient(to right, #fff8dc, #f5deb3);
       color: #4b3e2a;
+      margin: 0;
+      padding: 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px;
     }
 
     h1 {
       color: #b8860b;
-      font-size: 36px;
+      font-size: 40px;
       margin-bottom: 30px;
-      text-shadow: 1px 1px 1px #fff;
+      text-shadow: 1px 1px 2px #fff;
     }
 
     label {
@@ -66,54 +67,81 @@
       max-width: 600px;
       text-align: center;
     }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
-<body>
+<body onload="setDefaults()">
 
 <h1>Gold Calculator</h1>
 
-<label for="purity">Gold Purity:</label>
-<select id="purity" onchange="clearInputsImmediately()">
-  <option value="18">18K</option>
-  <option value="20">20K</option>
-  <option value="22">22K</option>
-</select>
+<div class="form-group">
+  <label for="purity">Gold Purity:</label>
+  <select id="purity" onchange="setDefaults()">
+    <option value="22" selected>22K</option>
+    <option value="20">20K</option>
+    <option value="18">18K</option>
+  </select>
+</div>
 
-<label>Gross weight</label>
-<input type="text" id="num1">
+<div class="form-group">
+  <label for="num1">Gross weight</label>
+  <input type="text" id="num1">
+</div>
 
-<label>Non-gold weight</label>
-<input type="text" id="num2" placeholder="e.g. 5%">
+<div class="form-group">
+  <label for="num2">Non-gold weight</label>
+  <input type="text" id="num2" placeholder="e.g. 5%">
+</div>
 
-<label>Stone weight</label>
-<input type="text" id="num3">
+<div class="form-group">
+  <label for="num3">Stone weight</label>
+  <input type="text" id="num3">
+</div>
 
-<label>Bank value for 6 month</label>
-<input type="text" id="num4" placeholder="Enter manually">
+<div class="form-group">
+  <label for="num4">Bank value for 6 month</label>
+  <input type="text" id="num4" placeholder="Enter manually">
+</div>
 
-<label>Bank value for 1 year</label>
-<input type="text" id="num5" placeholder="Enter manually">
+<div class="form-group">
+  <label for="num5">Bank value for 1 year</label>
+  <input type="text" id="num5" placeholder="Enter manually">
+</div>
 
-<label>Market value for 6 month</label>
-<input type="text" id="market6" placeholder="Enter manually">
-
-<label>Market value for 1 year</label>
-<input type="text" id="market12" placeholder="Enter manually">
+<div class="form-group">
+  <label for="market12">Market value for 1 year</label>
+  <input type="text" id="market12" placeholder="Enter manually">
+</div>
 
 <button onclick="calculate()">Calculate</button>
 
 <div id="answer"></div>
 
 <script>
-function clearInputsImmediately() {
+function setDefaults() {
   document.getElementById("num1").value = "";
   document.getElementById("num2").value = "";
   document.getElementById("num3").value = "";
-  document.getElementById("num4").value = "";
-  document.getElementById("num5").value = "";
-  document.getElementById("market6").value = "";
-  document.getElementById("market12").value = "";
   document.getElementById("answer").innerHTML = "";
+
+  var purity = document.getElementById("purity").value;
+
+  if (purity === "18") {
+    document.getElementById("num4").value = "6276";
+    document.getElementById("num5").value = "5827";
+    document.getElementById("market12").value = "8965";
+  } else if (purity === "20") {
+    document.getElementById("num4").value = "6973";
+    document.getElementById("num5").value = "6475";
+    document.getElementById("market12").value = "9961";
+  } else if (purity === "22") {
+    document.getElementById("num4").value = "7670";
+    document.getElementById("num5").value = "7122";
+    document.getElementById("market12").value = "10957";
+  }
 }
 
 function calculate() {
@@ -122,7 +150,6 @@ function calculate() {
   var field3 = parseFloat(document.getElementById("num3").value);
   var field4 = parseFloat(document.getElementById("num4").value);
   var field5 = parseFloat(document.getElementById("num5").value);
-  var market6 = parseFloat(document.getElementById("market6").value);
   var market12 = parseFloat(document.getElementById("market12").value);
 
   var percent = parseFloat(rawPercent.replace('%', ''));
@@ -130,21 +157,18 @@ function calculate() {
   var netGoldWeight = field1 - (field1 * percent / 100) - field3;
   var loanValue6Month = netGoldWeight * field4;
   var loanValue1Year = netGoldWeight * field5;
-  var marketValue6Month = netGoldWeight * market6;
   var marketValue1Year = netGoldWeight * market12;
 
   if (
     !isNaN(netGoldWeight) &&
     !isNaN(loanValue6Month) &&
     !isNaN(loanValue1Year) &&
-    !isNaN(marketValue6Month) &&
     !isNaN(marketValue1Year)
   ) {
     document.getElementById("answer").innerHTML =
       "💰 <strong>Net gold weight:</strong> " + netGoldWeight.toFixed(2) + " grams<br><br>" +
       "🏦 <strong>Bank value for 6 months:</strong> ₹" + loanValue6Month.toFixed(2) + "<br>" +
       "🏦 <strong>Bank value for 1 year:</strong> ₹" + loanValue1Year.toFixed(2) + "<br><br>" +
-      "📈 <strong>Market value for 6 months:</strong> ₹" + marketValue6Month.toFixed(2) + "<br>" +
       "📈 <strong>Market value for 1 year:</strong> ₹" + marketValue1Year.toFixed(2);
   } else {
     document.getElementById("answer").innerHTML = "⚠️ Please enter valid numbers.";
